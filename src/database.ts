@@ -7,7 +7,7 @@ export const config: Knex.Config = {
     port: 5432,
     user: "postgres",
     password: "12345",
-    database: "dietDB",
+    database: "diet",
   },
   migrations: {
     extension: "ts",

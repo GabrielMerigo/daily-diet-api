@@ -5,11 +5,11 @@ export async function up(knex: Knex): Promise<void> {
     table.uuid("id").primary();
     table.string("name").notNullable();
     table.string("description").notNullable();
-    table.string("dateMeal").notNullable();
-    table.string("hourMeal").notNullable();
-    table.boolean("isOnTheDiet").notNullable();
+    table.string("date_meal").notNullable();
+    table.string("hour_meal").notNullable();
+    table.boolean("is_on_the_diet").notNullable();
 
-    table.timestamp("creted_at").defaultTo(knex.fn.now());
+    table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });
 }
