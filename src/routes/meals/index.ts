@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
 import crypto from "node:crypto";
 import { z } from "zod";
-import { knex } from "../database";
+import { knex } from "../../database";
 
-import { checkIdExists } from "../middlewares/check-session-id-exists";
+import { checkIdExists } from "../../middlewares/check-session-id-exists";
 
 export const mealsRoutes = async (app: FastifyInstance) => {
   app.addHook("preHandler", checkIdExists);
