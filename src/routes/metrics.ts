@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import crypto from "node:crypto";
 import { z } from "zod";
 import { knex } from "../database";
 
@@ -11,23 +10,31 @@ export const metricsRoutes = async (app: FastifyInstance) => {
 
     const { id } = userMetricsParams.parse(req.params);
 
-    const userMeals = await knex("meals").select({ user_id: id });
+    const userMeals = await knex("meals").where({ user_id: id }).select("*");
     const mealsOnTheDiet = userMeals.filter((meal) => meal.is_on_the_diet);
     const mealsOutTheDiet = userMeals.filter((meal) => !meal.is_on_the_diet);
-    const mealsBestSequence = userMeals.reduce((acc, meal) => {
+    let mealsBestSequence: number[] = [];
+    let counter = 0;
+
+    userMeals.forEach((meal, index) => {
       if (meal.is_on_the_diet) {
-        return acc++;
+        counter += 1;
+
+        if (userMeals.length - 1 === index) {
+          mealsBestSequence.push(counter);
+        }
       } else {
-        acc = 0;
+        mealsBestSequence.push(counter);
+        counter = 0;
       }
-    }, 0);
+    });
 
     return {
       metrics: {
         meals_total: userMeals.length,
         meals_total_on_the_diet: mealsOnTheDiet.length,
         meals_total_out_the_diet: mealsOutTheDiet.length,
-        meals_best_sequence: mealsBestSequence,
+        meals_best_sequence: Math.max(...mealsBestSequence),
       },
     };
   });

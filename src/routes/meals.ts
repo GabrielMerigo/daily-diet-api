@@ -27,9 +27,10 @@ export const mealsRoutes = async (app: FastifyInstance) => {
       date_meal: z.string(),
       hour_meal: z.string(),
       is_on_the_diet: z.boolean(),
+      user_id: z.string(),
     });
 
-    const { date_meal, name, description, hour_meal, is_on_the_diet } =
+    const { date_meal, name, description, hour_meal, is_on_the_diet, user_id } =
       createMealBodySchema.parse(req.body);
 
     await knex("meals").insert({
@@ -39,6 +40,7 @@ export const mealsRoutes = async (app: FastifyInstance) => {
       date_meal,
       hour_meal,
       is_on_the_diet,
+      user_id,
     });
 
     return reply.status(201).send();
