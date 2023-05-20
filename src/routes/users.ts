@@ -2,13 +2,20 @@ import { FastifyInstance } from "fastify";
 import crypto from "node:crypto";
 import { z } from "zod";
 import { knex } from "../database";
+import { checkIdExists } from "../middlewares/check-session-id-exists";
 
 export const usersRoutes = async (app: FastifyInstance) => {
-  app.get("/", async (req, reply) => {
-    const data = await knex("users").select("*");
-    reply.statusCode = 200;
-    reply.send(data);
-  });
+  app.get(
+    "/",
+    {
+      preHandler: [checkIdExists],
+    },
+    async (req, reply) => {
+      const data = await knex("users").select("*");
+      reply.statusCode = 200;
+      reply.send(data);
+    }
+  );
 
   app.post("/", async (req, reply) => {
     const createUserBodySchema = z.object({
@@ -18,8 +25,18 @@ export const usersRoutes = async (app: FastifyInstance) => {
 
     const { image, name } = createUserBodySchema.parse(req.body);
 
+    let id = req.cookies.id;
+
+    if (!id) {
+      id = crypto.randomUUID();
+      (reply as any).cookie("id", id, {
+        path: "/",
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      });
+    }
+
     await knex("users").insert({
-      id: crypto.randomUUID(),
+      id,
       image,
       name,
     });
