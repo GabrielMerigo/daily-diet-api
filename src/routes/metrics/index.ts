@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { knex } from "../database";
-import { checkIdExists } from "../middlewares/check-session-id-exists";
+import { knex } from "../../database";
+import { checkIdExists } from "../../middlewares/check-session-id-exists";
 
 export const metricsRoutes = async (app: FastifyInstance) => {
   app.get(

@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 import request from "supertest";
 import { app } from "../../../app";
 
-describe("Transactions routes", () => {
+describe("Meals routes", () => {
   beforeAll(async () => {
     await app.ready();
   });
@@ -141,5 +141,58 @@ describe("Transactions routes", () => {
       .set("Cookie", cookie);
 
     expect(allMealsToSeeDeletedMeal.body.meals).toEqual([]);
+  });
+
+  it("should edit a meal by id", async () => {
+    const createUserResponse = await request(app.server)
+      .post("/users")
+      .send({
+        image: "/img",
+        name: "Gabriel",
+      })
+      .expect(201);
+
+    const cookie = createUserResponse.get("Set-Cookie");
+
+    const body = {
+      name: "Almoço",
+      description: "Comi uma carne com arroz",
+      date_meal: "12/12/2022",
+      hour_meal: "12:00",
+      is_on_the_diet: true,
+    };
+
+    await request(app.server).post("/meals").set("Cookie", cookie).send(body);
+
+    const allMealsResponse = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookie);
+
+    expect(allMealsResponse.body.meals[0]).toEqual(
+      expect.objectContaining({
+        name: "Almoço",
+        description: "Comi uma carne com arroz",
+      })
+    );
+
+    await request(app.server)
+      .put(`/meals/${allMealsResponse.body.meals[0].id}`)
+      .send({
+        name: "Janta",
+        description: "Comi sushi",
+      })
+      .set("Cookie", cookie)
+      .expect(200);
+
+    const allMealsToSeeUpdatedMeal = await request(app.server)
+      .get("/meals")
+      .set("Cookie", cookie);
+
+    expect(allMealsToSeeUpdatedMeal.body.meals[0]).toEqual(
+      expect.objectContaining({
+        name: "Janta",
+        description: "Comi sushi",
+      })
+    );
   });
 });

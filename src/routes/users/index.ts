@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import crypto from "node:crypto";
 import { z } from "zod";
-import { knex } from "../database";
-import { checkIdExists } from "../middlewares/check-session-id-exists";
+import { knex } from "../../database";
+import { checkIdExists } from "../../middlewares/check-session-id-exists";
 
 export const usersRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -11,9 +11,8 @@ export const usersRoutes = async (app: FastifyInstance) => {
       preHandler: [checkIdExists],
     },
     async (req, reply) => {
-      const data = await knex("users").select("*");
-      reply.statusCode = 200;
-      reply.send(data);
+      const users = await knex("users").select("*");
+      return { users };
     }
   );
 
