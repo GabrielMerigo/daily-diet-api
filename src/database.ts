@@ -1,13 +1,14 @@
 import { knex as setupKnex, Knex } from "knex";
+import { env } from "./env";
 
 export const config: Knex.Config = {
-  client: "pg",
+  client: env.DATABASE_CLIENT,
   connection: {
-    host: "localhost",
-    port: 5432,
-    user: "postgres",
-    password: "12345",
-    database: "diet",
+    host: env.DATABASE_HOST,
+    port: env.DATABASE_PORT,
+    user: env.DATABASE_USER,
+    password: env.DATABASE_PASSWORD,
+    database: env.DATABASE_NAME,
   },
   migrations: {
     extension: "ts",
