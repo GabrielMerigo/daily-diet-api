@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "test") {
 }
 
 const envSchema = z.object({
-  DATABASE_CLIENT: z.enum(["pg"]),
+  DATABASE_CLIENT: z.string(),
   DATABASE_PORT: z.coerce.number().default(5432),
   DATABASE_HOST: z.string(),
   DATABASE_USER: z.string(),
