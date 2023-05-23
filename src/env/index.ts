@@ -9,11 +9,7 @@ if (process.env.NODE_ENV === "test") {
 
 const envSchema = z.object({
   DATABASE_CLIENT: z.string(),
-  DATABASE_PORT: z.coerce.number().default(5432),
-  DATABASE_HOST: z.string(),
-  DATABASE_USER: z.string(),
-  DATABASE_PASSWORD: z.string(),
-  DATABASE_NAME: z.string(),
+  DATABASE_URL: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]).default("production"),
 });
 
